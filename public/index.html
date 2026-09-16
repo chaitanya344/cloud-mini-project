@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
 <title>Student Login Portal</title>
 
 <style>
@@ -106,3 +114,201 @@
     }
 
 </style>
+```
+
+</head>
+
+<body>
+
+<header>
+    <h1>Student Login Portal</h1>
+    <p>Secure Student Information System</p>
+</header>
+
+<div class="container" id="loginBox">
+
+```
+<h2>Student Login</h2>
+
+<input
+    type="text"
+    id="studentId"
+    placeholder="Enter Student ID"
+>
+
+<input
+    type="password"
+    id="password"
+    placeholder="Enter Password"
+>
+
+<br>
+
+<button onclick="login()">
+    Login
+</button>
+
+<div id="message"></div>
+```
+
+</div>
+
+<div class="container" id="dashboard">
+
+```
+<h2>Student Dashboard</h2>
+
+<div class="student-info">
+
+    <p>
+        <strong>Name:</strong>
+        <span id="name"></span>
+    </p>
+
+    <p>
+        <strong>Student ID:</strong>
+        <span id="studentIdDisplay"></span>
+    </p>
+
+    <p>
+        <strong>Roll Number:</strong>
+        <span id="rollNumber"></span>
+    </p>
+
+    <p>
+        <strong>Course:</strong>
+        <span id="course"></span>
+    </p>
+
+    <p>
+        <strong>Semester:</strong>
+        <span id="semester"></span>
+    </p>
+
+    <p>
+        <strong>Attendance:</strong>
+        <span id="attendance"></span>
+    </p>
+
+    <p>
+        <strong>Marks:</strong>
+        <span id="marks"></span>
+    </p>
+
+</div>
+
+<button
+    class="logout-button"
+    onclick="logout()">
+    Logout
+</button>
+```
+
+</div>
+
+<footer>
+    Student Login Portal
+</footer>
+
+<script>
+
+async function login() {
+
+    const studentId =
+        document.getElementById("studentId").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    const message =
+        document.getElementById("message");
+
+    message.innerText = "";
+
+    if (!studentId || !password) {
+
+        message.innerText =
+            "Please enter Student ID and Password.";
+
+        return;
+    }
+
+    try {
+
+        const response = await fetch("/login", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({
+                studentId: studentId,
+                password: password
+            })
+
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            message.innerText =
+                data.message || "Login failed.";
+
+            return;
+        }
+
+        document.getElementById("loginBox").style.display = "none";
+
+        document.getElementById("dashboard").style.display = "block";
+
+        document.getElementById("name").innerText =
+            data.student.name;
+
+        document.getElementById("studentIdDisplay").innerText =
+            data.student.studentId;
+
+        document.getElementById("rollNumber").innerText =
+            data.student.rollNumber;
+
+        document.getElementById("course").innerText =
+            data.student.course;
+
+        document.getElementById("semester").innerText =
+            data.student.semester;
+
+        document.getElementById("attendance").innerText =
+            data.student.attendance + "%";
+
+        document.getElementById("marks").innerText =
+            data.student.marks;
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.innerText =
+            "Unable to connect to server.";
+
+    }
+}
+
+function logout() {
+
+    document.getElementById("dashboard").style.display = "none";
+
+    document.getElementById("loginBox").style.display = "block";
+
+    document.getElementById("studentId").value = "";
+
+    document.getElementById("password").value = "";
+
+    document.getElementById("message").innerText = "";
+}
+
+</script>
+
+</body>
+</html>
